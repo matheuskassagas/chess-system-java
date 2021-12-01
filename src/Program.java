@@ -1,11 +1,10 @@
-import chess.ChassMacth;
-import chess.ChessPiece;
+import chess.ChessMacth;
 
 public class Program {
 
     public static void main (String[] args){
 
-        ChassMacth chassMacth = new ChassMacth();
+        ChessMacth chassMacth = new ChessMacth();
         UI.printBoard(chassMacth.getPieces());
     }
 }
