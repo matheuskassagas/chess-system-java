@@ -10,10 +10,21 @@ import chess.pieces.Rook;
 public class ChessMacth {
 
     private Board board;
+    private int turn;
+    private Color currentPlayer;
 
     public ChessMacth(){
         board = new Board(8,8);
+        turn = 1;
+        currentPlayer = Color.WHITE;
         initialSetup();
+    }
+    public int getTurn(){
+        return turn;
+    }
+
+    public Color getCurrentPlayer() {
+        return currentPlayer;
     }
 
     public ChessPiece[][] getPieces(){
@@ -26,14 +37,21 @@ public class ChessMacth {
         return mat;
     }
 
+    public boolean[][] possibleMoves(ChessPosition sourcePosition){
+        Position position = sourcePosition.toPosition();
+        validateSourcePosition(position);
+        return board.piece(position).possibleMoves();
+    }
+
+
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
         validateSourcePosition(source);
         validateTargetPosition(source, target);
         Piece capturePiece = makeMove(source, target);
+        nextTurn();
         return (ChessPiece) capturePiece;
-
     }
 
     private Piece makeMove (Position source, Position target){
@@ -46,10 +64,20 @@ public class ChessMacth {
     private void validateSourcePosition (Position position){
         if (!board.thereIsAPiece(position)){
             throw new ChessException("There is no piece on source position");
-        }if (!board.piece(position).isThereAnyPossibleMove()){
+        }
+        if (currentPlayer != ((ChessPiece) board.piece(position)).getColor()) {
+            throw new ChessException("The chose piece is not yours");
+        }
+        if (!board.piece(position).isThereAnyPossibleMove()){
             throw new ChessException("There is no possible moves for the chosen piece");
         }
     }
+
+    private void nextTurn (){
+        turn++;
+        currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
+    }
+
 
     private void validateTargetPosition (Position source, Position target){
         if (!board.piece(source).possibleMove(target));
