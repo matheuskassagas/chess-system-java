@@ -7,11 +7,17 @@ import chess.exception.ChessException;
 import chess.pieces.King;
 import chess.pieces.Rook;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChessMacth {
 
     private Board board;
     private int turn;
     private Color currentPlayer;
+
+    private List<Piece> piecesOnTheBoard = new ArrayList<>();
+    private List<Piece> capturedPieces = new ArrayList<>();
 
     public ChessMacth(){
         board = new Board(8,8);
@@ -58,6 +64,12 @@ public class ChessMacth {
         Piece p = board.removePiece(source);
         Piece capturedPiece = board.removePiece(target);
         board.placePiece(p, target);
+
+        if(capturedPiece != null){
+            piecesOnTheBoard.remove(capturedPiece);
+            capturedPieces.add(capturedPiece);
+        }
+
         return capturedPiece;
     }
 
@@ -85,6 +97,7 @@ public class ChessMacth {
 
     private void placeNewPiece(char column, int row, ChessPiece chessPiece){
         board.placePiece(chessPiece, new ChessPosition(column, row).toPosition());
+        piecesOnTheBoard.add(chessPiece);
     }
 
     public void initialSetup(){
